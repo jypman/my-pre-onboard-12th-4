@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import {
   scaleBand,
@@ -19,7 +19,7 @@ interface ChartProps {
   onClickBar?: (event: React.MouseEvent, barVal: IChartVal) => void;
 }
 
-const width: number = 1440;
+const width: number = 1800;
 const height: number = 760;
 const [chartMT, chartMR, chartMB, chartML] = [70, 70, 70, 70];
 const chartWidth: number = width - chartML - chartMR;
@@ -29,7 +29,7 @@ const barPadding = 0.2;
 const doubleAreaExtent = 2;
 const barColor = "green";
 const highlightBarColor = "red";
-const areaColor = "aqua";
+const areaColor = "orange";
 
 export const Chart = ({
   xAxisData,
@@ -37,6 +37,8 @@ export const Chart = ({
   highlightedBar,
   onClickBar,
 }: ChartProps) => {
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const [tooltipData, setTooltipData] = useState<IChartVal | null>(null);
   const initChart = (): void => {
     select("svg").remove();
   };
@@ -88,7 +90,7 @@ export const Chart = ({
         .attr("transform", "rotate(-90)")
         .attr("y", -40)
         .attr("text-anchor", "end")
-        .attr("fill", "black")
+        .attr("fill", areaColor)
         .attr("font-size", axisFontSize)
         .text("area");
 
@@ -102,12 +104,24 @@ export const Chart = ({
         .attr("transform", "rotate(-90)")
         .attr("y", 60)
         .attr("text-anchor", "end")
-        .attr("fill", "black")
+        .attr("fill", barColor)
         .attr("font-size", axisFontSize)
         .text("bar");
     };
 
     const drawBarChart = (): void => {
+      const pointerMoved = (event: PointerEvent, data: IChartVal) => {
+        setTooltipData(data);
+        select(tooltipRef.current)
+          .style("display", "block")
+          .style("left", `${event.clientX - 20}px`)
+          .style("top", `${event.clientY - 110}px`);
+      };
+
+      const hiddenTooltip = () => {
+        select(tooltipRef.current).style("display", "none");
+      };
+
       chart
         .selectAll("rect")
         .data(yAxisData)
@@ -118,7 +132,7 @@ export const Chart = ({
           "height",
           (barValue) => chartHeight - yBarScale(barValue.value_bar),
         )
-        .attr("fill", (d: IChartVal) => {
+        .attr("fill", (d: IChartVal, index: number) => {
           return d.id === highlightedBar ? highlightBarColor : barColor;
         })
         .attr("x", (_, index: number) => xTimeScale(xAxisData[index]) as number)
@@ -126,7 +140,10 @@ export const Chart = ({
         .style("cursor", "pointer")
         .on("click", (event: React.MouseEvent, data: IChartVal) => {
           if (onClickBar) onClickBar(event, data);
-        });
+        })
+        .on("pointerenter pointermove", pointerMoved)
+        .on("pointerleave", hiddenTooltip)
+        .on("touchstart", (event) => event.preventDefault());
     };
 
     const drawAreaChart = (): void => {
@@ -161,10 +178,43 @@ export const Chart = ({
   return (
     <StyledChart>
       <div className="canvas" />
+      {tooltipData && (
+        <div className="tooltip" ref={tooltipRef}>
+          <div className="content-wrapper">
+            <div className="title">id: {tooltipData?.id}</div>
+            <div className="bar-data">bar: {tooltipData?.value_bar}</div>
+            <div className="area-data">area: {tooltipData?.value_area}</div>
+          </div>
+        </div>
+      )}
     </StyledChart>
   );
 };
 
 const StyledChart = styled.section`
   width: ${width}px;
+
+  .tooltip {
+    padding: 10px;
+    position: absolute;
+    background-color: #fff;
+    border: 3px solid black;
+    border-radius: 14px;
+    display: none;
+    .content-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      .title {
+        font-weight: bold;
+      }
+      .bar-data {
+        color: ${barColor};
+      }
+      .area-data {
+        color: ${areaColor};
+      }
+    }
+  }
 `;
