@@ -9,7 +9,6 @@ import {
   axisRight,
   select,
   area,
-  curveNatural,
 } from "d3";
 import chartData from "../mocks/data.json";
 
@@ -17,10 +16,6 @@ interface IChartVal {
   id: string;
   value_area: number;
   value_bar: number;
-}
-
-interface IChartResponse {
-  [key: string]: IChartVal;
 }
 
 export const Chart = () => {
@@ -31,6 +26,7 @@ export const Chart = () => {
   const chartHeight: number = height - chartMT - chartMB;
   const axisFontSize = 20;
   const barPadding = 0.2;
+  const doubleAreaExtent = 2;
   const barColor = "green";
   const areaColor = "aqua";
   const parsedDateData: string[] = Object.keys(chartData.response);
@@ -55,10 +51,18 @@ export const Chart = () => {
     const xTimeAxisG = chart
       .append("g")
       .attr("transform", `translate(0, ${chartHeight})`);
-    const xTimeAxis = axisBottom(xTimeScale);
+    const xTimeAxis = axisBottom(xTimeScale).tickValues(
+      xTimeScale.domain().filter((_, index: number) => {
+        const axisLabelSection = 10;
+        return index > 0 && !(index % axisLabelSection);
+      }),
+    );
     xTimeAxisG.call(xTimeAxis);
 
-    const yAreaExtent = [0, max(parsedValueData, (d) => d.value_area) ?? 0];
+    const yAreaExtent = [
+      0,
+      (max(parsedValueData, (d) => d.value_area) ?? 0) * doubleAreaExtent,
+    ];
     const yAreaScale = scaleLinear()
       .domain(yAreaExtent)
       .range([chartHeight, 0]);
@@ -105,22 +109,21 @@ export const Chart = () => {
 
     const drawArea = area<IChartVal>()
       .x((_: IChartVal, index: number): number => {
-        return xTimeScale(parsedDateData[index]) as number;
+        const halfBarWidth = xTimeScale.bandwidth() / 2;
+        return (
+          halfBarWidth +
+          barPadding +
+          (xTimeScale(parsedDateData[index]) as number)
+        );
       })
-      .y0((data: IChartVal): number => {
-        return chartHeight - data.value_area;
-      })
-      .y1((): number => {
-        return chartHeight;
-      })
-      .curve(curveNatural);
+      .y0(yAreaScale(0))
+      .y1((data: IChartVal): number => yAreaScale(data.value_area));
 
-    const d3Area = chart.selectAll("path").data(parsedValueData);
-    d3Area
-      .enter()
+    chart
       .append("path")
       .attr("fill", areaColor)
       .attr("stroke", areaColor)
+      .attr("opacity", "0.8")
       .attr("d", drawArea(parsedValueData));
   }, []);
 
@@ -132,13 +135,5 @@ export const Chart = () => {
 };
 
 const StyledChart = styled.div`
-  .y-area-axis text {
-    fill: red;
-  }
-  .y-bar-axis text {
-    fill: blue;
-  }
-  .x-axis text {
-    fill: black;
-  }
+  //
 `;
