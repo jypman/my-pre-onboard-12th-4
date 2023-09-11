@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { NotFound } from "./NoutFound";
-import { Chart } from "./Chart";
+import { Home } from "./Home";
 
 export const routers = createBrowserRouter([
   {
@@ -9,6 +9,6 @@ export const routers = createBrowserRouter([
   },
   {
     path: "/",
-    element: <Chart />,
+    element: <Home />,
   },
 ]);
