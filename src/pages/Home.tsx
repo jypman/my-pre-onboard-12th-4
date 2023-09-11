@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Chart } from "./Chart";
+import { Chart } from "../components/Chart";
 import { Button } from "../components/Button";
 import chartData from "../mocks/data.json";
 import { IChartVal } from "../types/chart";
