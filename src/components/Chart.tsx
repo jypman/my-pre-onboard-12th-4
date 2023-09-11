@@ -11,6 +11,7 @@ import {
   area,
 } from "d3";
 import { IChartVal } from "../types/chart";
+import color from "../styles/color";
 
 interface ChartProps {
   xAxisData: string[];
@@ -24,12 +25,12 @@ const height: number = 760;
 const [chartMT, chartMR, chartMB, chartML] = [70, 70, 70, 70];
 const chartWidth: number = width - chartML - chartMR;
 const chartHeight: number = height - chartMT - chartMB;
-const axisFontSize = 20;
+const axisFontSize = 30;
 const barPadding = 0.2;
 const doubleAreaExtent = 2;
-const barColor = "green";
-const highlightBarColor = "red";
-const areaColor = "orange";
+const barColor = color.green;
+const highlightBarColor = color.blue;
+const areaColor = color.orange;
 
 export const Chart = ({
   xAxisData,
@@ -73,7 +74,8 @@ export const Chart = ({
     const drawAxis = (): void => {
       const xTimeAxisG = chart
         .append("g")
-        .attr("transform", `translate(0, ${chartHeight})`);
+        .attr("transform", `translate(0, ${chartHeight})`)
+        .attr("font-weight", "bold");
       const xTimeAxis = axisBottom(xTimeScale).tickValues(
         xTimeScale.domain().filter((_, index: number) => {
           const axisTicksSection = 10;
@@ -96,13 +98,14 @@ export const Chart = ({
 
       const yBarAxisG = chart
         .append("g")
+        .attr("font-size", 40)
         .attr("transform", `translate(${chartWidth}, 0)`);
       const yBarAxis = axisRight(yBarScale);
       yBarAxisG
         .call(yBarAxis)
         .append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 60)
+        .attr("y", 70)
         .attr("text-anchor", "end")
         .attr("fill", barColor)
         .attr("font-size", axisFontSize)
@@ -197,7 +200,7 @@ const StyledChart = styled.section`
   .tooltip {
     padding: 10px;
     position: absolute;
-    background-color: #fff;
+    background-color: ${color.white};
     border: 3px solid black;
     border-radius: 14px;
     display: none;

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import color from "../styles/color";
 
 interface ButtonProps {
   primary?: boolean;
@@ -38,11 +39,11 @@ const StyledButton = styled.button`
   line-height: 1;
 
   &.color-primary {
-    color: white;
-    background-color: #1ea7fd;
+    color: ${color.white};
+    background-color: ${color.blue};
   }
   &.color-secondary {
-    color: #333;
+    color: ${color.black};
     background-color: transparent;
     box-shadow: rgba(0, 0, 0, 0.15) 0 0 0 1px inset;
   }
