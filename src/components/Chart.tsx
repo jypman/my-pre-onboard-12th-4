@@ -39,13 +39,15 @@ export const Chart = ({
   onClickBar,
 }: ChartProps) => {
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
   const [tooltipData, setTooltipData] = useState<IChartVal | null>(null);
+
   const initChart = (): void => {
     select("svg").remove();
   };
 
   const drawChart = (): void => {
-    const canvas = select(".canvas")
+    const canvas = select(canvasRef.current)
       .append("svg")
       .attr("width", width)
       .attr("height", height);
@@ -180,7 +182,7 @@ export const Chart = ({
 
   return (
     <StyledChart>
-      <div className="canvas" />
+      <div ref={canvasRef} />
       {tooltipData && (
         <div className="tooltip" ref={tooltipRef}>
           <div className="content-wrapper">
