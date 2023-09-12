@@ -20,8 +20,8 @@ interface ChartProps {
   onClickBar?: (event: React.MouseEvent, barVal: IChartVal) => void;
 }
 
-const width: number = 1800;
-const height: number = 760;
+const width: number = 1440;
+const height: number = 700;
 const [chartMT, chartMR, chartMB, chartML] = [70, 70, 70, 70];
 const chartWidth: number = width - chartML - chartMR;
 const chartHeight: number = height - chartMT - chartMB;
@@ -44,6 +44,22 @@ export const Chart = ({
 
   const initChart = (): void => {
     select("svg").remove();
+  };
+
+  const pointerMoved = (event: PointerEvent) => {
+    select(tooltipRef.current)
+      .style("display", "block")
+      .style("left", `${event.clientX - 20}px`)
+      .style("top", `${event.clientY - 110}px`);
+  };
+
+  const pointerEnter = (_: PointerEvent, data: IChartVal) => {
+    setTooltipData(data);
+  };
+
+  const hiddenTooltip = () => {
+    select(tooltipRef.current).style("display", "none");
+    setTooltipData(null);
   };
 
   const drawChart = (): void => {
@@ -115,18 +131,6 @@ export const Chart = ({
     };
 
     const drawBarChart = (): void => {
-      const pointerMoved = (event: PointerEvent, data: IChartVal) => {
-        setTooltipData(data);
-        select(tooltipRef.current)
-          .style("display", "block")
-          .style("left", `${event.clientX - 20}px`)
-          .style("top", `${event.clientY - 110}px`);
-      };
-
-      const hiddenTooltip = () => {
-        select(tooltipRef.current).style("display", "none");
-      };
-
       chart
         .selectAll("rect")
         .data(yAxisData)
@@ -146,7 +150,8 @@ export const Chart = ({
         .on("click", (event: React.MouseEvent, data: IChartVal) => {
           if (onClickBar) onClickBar(event, data);
         })
-        .on("pointerenter pointermove", pointerMoved)
+        .on("pointerenter", pointerEnter)
+        .on("pointermove", pointerMoved)
         .on("pointerleave", hiddenTooltip)
         .on("touchstart", (event) => event.preventDefault());
     };
