@@ -1,12 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import color from "../styles/color";
-import {
-  barColor,
-  areaColor,
-  useChartVal,
-  useChartActions,
-} from "../providers/ChartProvider";
+import { barColor, areaColor, useChartVal } from "../providers/ChartProvider";
 
 export const Chart = () => {
   const {
@@ -16,9 +11,9 @@ export const Chart = () => {
     xAxisData,
     yAxisData,
     highlightedBarVal,
+    initChart,
+    drawChart,
   } = useChartVal();
-
-  const { initChart, drawChart } = useChartActions();
 
   useEffect(() => {
     initChart();

@@ -38,12 +38,6 @@ interface IChartValCtx {
   highlightedBarVal: string;
   tooltipRef: RefObject<HTMLDivElement> | null;
   tooltipData: IChartVal | null;
-}
-
-interface IChartActionsCtx {
-  pointerMoved: (e: PointerEvent, data: IChartVal) => void;
-  pointerEnter: (e: PointerEvent, data: IChartVal) => void;
-  hiddenTooltip: (e: PointerEvent, data: IChartVal) => void;
   drawChart: () => void;
   initChart: () => void;
 }
@@ -62,13 +56,7 @@ const ChartVal = createContext<IChartValCtx>({
   highlightedBarVal: "",
   tooltipRef: null,
   tooltipData: null,
-});
-
-const ChartActions = createContext<IChartActionsCtx>({
   initChart: () => {},
-  pointerMoved: () => {},
-  pointerEnter: () => {},
-  hiddenTooltip: () => {},
   drawChart: () => {},
 });
 
@@ -76,14 +64,6 @@ export const useChartVal = () => {
   const val = useContext(ChartVal);
   if (val === undefined) {
     throw new Error("useChartVal should be used within ChartProvider");
-  }
-  return val;
-};
-
-export const useChartActions = () => {
-  const val = useContext(ChartActions);
-  if (val === undefined) {
-    throw new Error("useChartActions should be used within ChartProvider");
   }
   return val;
 };
@@ -246,24 +226,11 @@ export const ChartProvider = ({
       tooltipRef,
       tooltipData,
       highlightedBarVal,
+      drawChart,
+      initChart,
     }),
     [tooltipData, xAxisData, yAxisData],
   );
 
-  const chartActions = useMemo<IChartActionsCtx>(
-    () => ({
-      initChart,
-      pointerMoved,
-      pointerEnter,
-      hiddenTooltip,
-      drawChart,
-    }),
-    [xAxisData, yAxisData],
-  );
-
-  return (
-    <ChartActions.Provider value={chartActions}>
-      <ChartVal.Provider value={chartVal}>{children}</ChartVal.Provider>
-    </ChartActions.Provider>
-  );
+  return <ChartVal.Provider value={chartVal}>{children}</ChartVal.Provider>;
 };
