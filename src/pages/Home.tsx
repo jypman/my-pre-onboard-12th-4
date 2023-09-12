@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Chart } from "../components/Chart";
 import { Button } from "../components/Button";
+import { ChartProvider } from "../providers/ChartProvider";
 import chartData from "../mocks/data.json";
-import { IChartVal } from "../types/chart";
-
-const dateData: string[] = Object.keys(chartData.response);
-const valueData: IChartVal[] = Object.values(chartData.response);
 
 export const Home = () => {
-  const regionList: string[] = [...new Set(valueData.map((value) => value.id))];
+  const regionList: string[] = [
+    ...new Set(Object.values(chartData.response).map((value) => value.id)),
+  ];
   const [highlightedRegion, setHighlightedRegion] = useState<string>("");
+
   const changeRegion = (clickedRegion: string): void =>
     setHighlightedRegion(clickedRegion);
+
   const initRegion = () => setHighlightedRegion("");
 
   return (
@@ -28,12 +29,13 @@ export const Home = () => {
           />
         ))}
       </div>
-      <Chart
-        xAxisData={dateData}
-        yAxisData={valueData}
-        highlightedBar={highlightedRegion}
+      <ChartProvider
+        chartData={chartData.response}
         onClickBar={(_, data) => changeRegion(data.id)}
-      />
+        highlightedBarVal={highlightedRegion}
+      >
+        <Chart />
+      </ChartProvider>
     </StyledHome>
   );
 };
