@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import color from "../styles/color";
 import { barColor, areaColor, useChartVal } from "../providers/ChartProvider";
+import { getThousandUnit } from "../utils";
 
 export const Chart = () => {
   const {
@@ -26,9 +27,13 @@ export const Chart = () => {
       {tooltipData && (
         <div className="tooltip" ref={tooltipRef}>
           <div className="content-wrapper">
-            <div className="title">id: {tooltipData?.id}</div>
-            <div className="bar-data">bar: {tooltipData?.value_bar}</div>
-            <div className="area-data">area: {tooltipData?.value_area}</div>
+            <div className="title">id: {tooltipData.id}</div>
+            <div className="bar-data">
+              bar: {getThousandUnit(tooltipData.value_bar)}
+            </div>
+            <div className="area-data">
+              area: {getThousandUnit(tooltipData.value_area)}
+            </div>
           </div>
         </div>
       )}
