@@ -84,14 +84,14 @@ export const ChartProvider = ({
     select("svg").remove();
   };
 
-  const pointerMoved = (event: PointerEvent) => {
+  const changeTooltipCoordinates = (event: PointerEvent) => {
     select(tooltipRef.current)
       .style("display", "block")
       .style("left", `${event.clientX - 20}px`)
       .style("top", `${event.clientY - 110}px`);
   };
 
-  const pointerEnter = (_: PointerEvent, data: IChartVal) => {
+  const updateTooltipData = (_: PointerEvent, data: IChartVal) => {
     setTooltipData(data);
   };
 
@@ -188,8 +188,8 @@ export const ChartProvider = ({
         .on("click", (event: React.MouseEvent, data: IChartVal) => {
           if (onClickBar) onClickBar(event, data);
         })
-        .on("pointerenter", pointerEnter)
-        .on("pointermove", pointerMoved)
+        .on("pointerenter", updateTooltipData)
+        .on("pointermove", changeTooltipCoordinates)
         .on("pointerleave", hiddenTooltip)
         .on("touchstart", (event) => event.preventDefault());
     };
