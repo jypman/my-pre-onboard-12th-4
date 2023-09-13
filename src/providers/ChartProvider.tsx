@@ -130,6 +130,7 @@ export const ChartProvider = ({
     const drawAxis = (): void => {
       const xTimeAxisG = chart
         .append("g")
+        .attr("role", "x-axis")
         .attr("transform", `translate(0, ${chartHeight})`)
         .attr("font-weight", "bold");
       const xTimeAxis = axisBottom(xTimeScale).tickValues(
@@ -145,6 +146,7 @@ export const ChartProvider = ({
       yAreaAxisG
         .call(yAreaAxis)
         .append("text")
+        .attr("role", "y-axis-area")
         .attr("transform", "rotate(-90)")
         .attr("y", -40)
         .attr("text-anchor", "end")
@@ -154,6 +156,7 @@ export const ChartProvider = ({
 
       const yBarAxisG = chart
         .append("g")
+        .attr("role", "y-axis-bar")
         .attr("font-size", 40)
         .attr("transform", `translate(${chartWidth}, 0)`);
       const yBarAxis = axisRight(yBarScale);
@@ -174,6 +177,7 @@ export const ChartProvider = ({
         .data(yAxisData)
         .enter()
         .append("rect")
+        .attr("role", "bar")
         .attr("width", xTimeScale.bandwidth)
         .attr(
           "height",
@@ -207,6 +211,7 @@ export const ChartProvider = ({
 
       chart
         .append("path")
+        .attr("role", "area")
         .attr("fill", areaColor)
         .attr("stroke", areaColor)
         .attr("opacity", "0.8")

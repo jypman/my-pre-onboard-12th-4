@@ -25,7 +25,7 @@ export const Chart = () => {
     <StyledChart>
       <div ref={canvasRef} />
       {tooltipData && (
-        <div className="tooltip" ref={tooltipRef}>
+        <div role="tooltip" className="tooltip" ref={tooltipRef}>
           <div className="content-wrapper">
             <div className="title">id: {tooltipData.id}</div>
             <div className="bar-data">
