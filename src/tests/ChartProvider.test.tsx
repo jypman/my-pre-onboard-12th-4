@@ -6,36 +6,69 @@ import mockData from "../mocks/data.json";
 import { getThousandUnit, delay } from "../utils";
 
 describe("ChartProvider", () => {
-  beforeEach(() => {
+  it("bar 차트 갯수와 bar data 갯수 일치하도록 렌더링", () => {
     render(
       <ChartProvider chartData={mockData.response}>
         <Chart />
-      </ChartProvider>,
+      </ChartProvider>
     );
-  });
 
-  it("bar 차트 갯수와 bar data 갯수 일치하도록 렌더링", () => {
     const bar = screen.getAllByRole("bar");
     const barDataLength = Object.values(mockData.response).length;
     expect(bar).toHaveLength(barDataLength);
   });
+
   it("area 차트 렌더링 완료", () => {
+    render(
+      <ChartProvider chartData={mockData.response}>
+        <Chart />
+      </ChartProvider>
+    );
+
     const area = screen.getByRole("area");
     expect(area).toBeInTheDocument();
   });
+
   it("x축 수치 렌더링", () => {
+    render(
+      <ChartProvider chartData={mockData.response}>
+        <Chart />
+      </ChartProvider>
+    );
+
     const xAxis = screen.getByRole("x-axis");
     expect(xAxis).toBeInTheDocument();
   });
+
   it("y축 bar 수치 렌더링", () => {
+    render(
+      <ChartProvider chartData={mockData.response}>
+        <Chart />
+      </ChartProvider>
+    );
+
     const yBarAxis = screen.getByRole("y-axis-bar");
     expect(yBarAxis).toBeInTheDocument();
   });
+
   it("y축 area 수치 렌더링", () => {
+    render(
+      <ChartProvider chartData={mockData.response}>
+        <Chart />
+      </ChartProvider>
+    );
+
     const yAreaAxis = screen.getByRole("y-axis-area");
     expect(yAreaAxis).toBeInTheDocument();
   });
+
   it("bar 차트 mouse enter 시 해당 bar 지역의 정보와 툴팁정보 매칭", async () => {
+    render(
+      <ChartProvider chartData={mockData.response}>
+        <Chart />
+      </ChartProvider>
+    );
+
     const bars = screen.getAllByRole("bar");
     const toHoverBarIndex = 3;
     const hoveredMockData = Object.values(mockData.response)[toHoverBarIndex];
@@ -45,10 +78,10 @@ describe("ChartProvider", () => {
     const tooltip = await screen.findByRole("tooltip");
     const tooltipId = await screen.findByText(`id: ${hoveredMockData.id}`);
     const tooltipBar = await screen.findByText(
-      `bar: ${getThousandUnit(hoveredMockData.value_bar)}`,
+      `bar: ${getThousandUnit(hoveredMockData.value_bar)}`
     );
     const tooltipArea = await screen.findByText(
-      `area: ${getThousandUnit(hoveredMockData.value_area)}`,
+      `area: ${getThousandUnit(hoveredMockData.value_area)}`
     );
 
     expect(tooltip).toBeInTheDocument();
@@ -56,7 +89,14 @@ describe("ChartProvider", () => {
     expect(tooltipBar).toBeInTheDocument();
     expect(tooltipArea).toBeInTheDocument();
   });
+
   it("bar 차트 mouse leave 시 툴팁 비활성화", async () => {
+    render(
+      <ChartProvider chartData={mockData.response}>
+        <Chart />
+      </ChartProvider>
+    );
+
     const bars = screen.getAllByRole("bar");
     const toHoverBarIndex = 1;
 

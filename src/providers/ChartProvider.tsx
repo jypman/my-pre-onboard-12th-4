@@ -137,7 +137,7 @@ export const ChartProvider = ({
         xTimeScale.domain().filter((_, index: number) => {
           const axisTicksSection = 10;
           return index > 0 && !(index % axisTicksSection);
-        }),
+        })
       );
       xTimeAxisG.call(xTimeAxis);
 
@@ -181,7 +181,7 @@ export const ChartProvider = ({
         .attr("width", xTimeScale.bandwidth)
         .attr(
           "height",
-          (barValue) => chartHeight - yBarScale(barValue.value_bar),
+          (barValue) => chartHeight - yBarScale(barValue.value_bar)
         )
         .attr("fill", (d: IChartVal, index: number) => {
           return d.id === highlightedBarVal ? highlightBarColor : barColor;
@@ -234,7 +234,7 @@ export const ChartProvider = ({
       drawChart,
       initChart,
     }),
-    [tooltipData, xAxisData, yAxisData],
+    [tooltipData, xAxisData, yAxisData]
   );
 
   return <ChartVal.Provider value={chartVal}>{children}</ChartVal.Provider>;
